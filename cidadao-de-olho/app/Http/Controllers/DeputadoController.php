@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\DeputadoRepository;
+use App\Repositories\VerbasIndenizatoriasRepository;
 use App\Deputado;
 
 class DeputadoController extends Controller
@@ -30,5 +31,19 @@ class DeputadoController extends Controller
 
     public function index() {
         return Deputado::all();
+    }
+
+    public function topCincoVerbas() {
+        $deputadosList = Deputado::all();
+
+        foreach($deputadosList as $deputado)
+        {
+            $return = DeputadoRepository::updateVerbasIndenizatorias($deputado);
+
+            if (isset($return->action) && !$return->action)
+            {
+                return $return->message;
+            }
+        }
     }
 }

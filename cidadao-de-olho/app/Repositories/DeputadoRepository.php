@@ -24,6 +24,10 @@ class DeputadoRepository
         }
     }
 
+    public static function updateVerbasIndenizatorias($deputado) {
+        return VerbasIndenizatoriasRepository::updateVerbasIndenizatorias($deputado);
+    }
+
     public function store($deputado) {
         return $deputado->save();
     }
