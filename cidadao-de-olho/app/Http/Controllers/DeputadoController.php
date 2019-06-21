@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\DeputadoRepository;
+use App\Deputado;
 
 class DeputadoController extends Controller
 {
@@ -16,7 +17,7 @@ class DeputadoController extends Controller
         {
             $deputadoRepository->updateDeputadosList($res);
             $returnObject->code   = 200;
-            $returnObject->body   = json_decode($res)->list;
+            $returnObject->body   = $res;
         }
         else
         {
@@ -25,5 +26,9 @@ class DeputadoController extends Controller
         }        
 
         return response()->json($returnObject);
+    }
+
+    public function index() {
+        return Deputado::all();
     }
 }

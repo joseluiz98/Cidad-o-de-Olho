@@ -16,7 +16,7 @@ class CreateDeputadosTable extends Migration
         Schema::create('deputados', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->tinyInteger('id_almg')->nullable(false);
+            $table->integer('id_almg')->nullable(false);
             $table->string('name')->nullable(false);
             $table->string('partido')->nullable(false);
             $table->string('tag_localizacao')->nullable(false);

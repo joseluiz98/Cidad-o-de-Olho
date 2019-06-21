@@ -5,6 +5,8 @@ namespace App\Repositories;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Model;
+use App\Deputado;
 
 class DeputadoRepository
 {
@@ -15,14 +17,15 @@ class DeputadoRepository
     }
 
     public function updateDeputadosList($request) {
-        $this->makeCreateMultiples($request);
+        // Drop all rows on deputados table first
+        if (Deputado::query()->delete() || Deputado::all()->count() == 0)
+        {
+            $this->makeCreateMultiples($request);
+        }
     }
 
-    public function store($request) {
-        $deputado = new Deputado;
-        dd($deputado);
-        $deputado->name = 'John';
-        $deputado->save();
+    public function store($deputado) {
+        return $deputado->save();
     }
 
     private function makeCreateMultiples($request) {
@@ -34,7 +37,6 @@ class DeputadoRepository
             $createDeputadoObject->merge(['tag_localizacao' => $deputado->tagLocalizacao]);
             
             $createDeputadoObject   = $this->makeCreate($createDeputadoObject);            
-            dd(createDeputadoObject);
             $this->store($createDeputadoObject);
         }
     }
@@ -55,7 +57,10 @@ class DeputadoRepository
         }
         else
         {
-            return $request;
+            $data       = $request->all();
+            $deputado   = new Deputado;
+            $deputado->fill($data);
+            return $deputado;
         }
     }
 }
