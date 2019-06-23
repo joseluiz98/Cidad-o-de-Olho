@@ -5,20 +5,20 @@ namespace App\Repositories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Model;
-use App\Deputado;
-use App\VerbaIndenizatoria;
+use App\Models\Deputado;
+use App\Models\VerbaIndenizatoria;
 
 class VerbasIndenizatoriasRepository
 {
-    public static function updateVerbasIndenizatorias($deputado) {        
+    public static function updateVerbasIndenizatorias($deputado) {
         $id_almg    = $deputado->id_almg;
         $ano        = 2017;
         $meses      = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         
         try
         {
-            // Reset verbas indenizatorias table
-            if (Deputado::query()->delete() || Deputado::all()->count() == 0)
+            // Reset verbas indenizatorias table            
+            if ($deputado->verbasIndenizatorias()->delete() || $deputado->verbasIndenizatorias()->count() == 0);
             {
                 foreach($meses as $mes)
                 {
@@ -43,7 +43,7 @@ class VerbasIndenizatoriasRepository
                         else
                         {
                             VerbasIndenizatoriasRepository::store($createVerbaObject);
-                            sleep(1);
+                            sleep(1); // aguarda um segundo por limitação imposta pela api dados abertos almg
                         }
                     }
                 }

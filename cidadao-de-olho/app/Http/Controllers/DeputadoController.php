@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\DeputadoRepository;
 use App\Repositories\VerbasIndenizatoriasRepository;
-use App\Deputado;
+use App\Models\Deputado;
+use App\Models\VerbaIndenizatoria;
 
 class DeputadoController extends Controller
 {
@@ -34,7 +35,11 @@ class DeputadoController extends Controller
     }
 
     public function topCincoVerbas() {
-        $deputadosList = Deputado::all();
+        // Limpa tabela de verbas
+        VerbaIndenizatoria::query()->delete();
+
+        $deputado = new Deputado();
+        $deputadosList = $deputado->all();
 
         foreach($deputadosList as $deputado)
         {

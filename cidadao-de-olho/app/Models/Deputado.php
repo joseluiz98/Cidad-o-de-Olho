@@ -1,8 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\VerbaIndenizatoria;
 
 class Deputado extends Model
 {
@@ -11,8 +12,9 @@ class Deputado extends Model
 
     protected $fillable = ['id_almg', 'name', 'partido', 'tag_localizacao'];
 
-    public function verbas()
+    public function verbasIndenizatorias()
     {
-        return $this->belongsToMany('App\VerbasIndenizatorias')->using('App\RoleVerbasIndenizatorias');
+        return $this->hasMany('App\Models\VerbaIndenizatoria', 'deputado_id');
     }
+
 }

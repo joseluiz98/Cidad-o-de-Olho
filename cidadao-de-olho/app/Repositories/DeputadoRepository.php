@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Model;
-use App\Deputado;
+use App\Models\Deputado;
 
 class DeputadoRepository
 {
