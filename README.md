@@ -20,7 +20,7 @@ Segue uma lista contendo todos os softwares necessrios para o funcionamento da f
 	* MySQL Server 5.7.26 (https://dev.mysql.com/doc/)
 	* PHP >= 7.3
 	
-## Instalando o software
+## Instalando o software e suas dependências com o Composer
 
 Para instalar esta ferramenta, basta clonar este repositório em algum diretório de seu desejo
 ```
@@ -39,8 +39,9 @@ Após isto, você já pode rodar o servidor, e brincar!
 ```
 sudo php artisan serve --port 8000
 ```
+Para quaisquer eventuais problemas que você possa a vir a ter, [este](https://devmarketer.io/learn/setup-laravel-project-cloned-github-com/) é um ótimo tutorial para quem nunca clonou um projeto Laravel antes :D
 
-## Populando o banco e recuperando o Top 5
+## Populando o banco e recuperando o Top 5 Mensal
 
 __Para as fases a seguir, recomendamos (e faremos) a utilização de uma aplicação própria para testes de APIs, como o [Postman](https://www.getpostman.com/downloads/).__
 
@@ -62,4 +63,4 @@ http://localhost:8000/api/deputados/que_mais_pediram_reembolso
 ```
 
 Verá, após a requisição recuperar e classificar os dados do WebService externo, um retorno do tipo JSON contendo os dados
-desejados!
+desejados, grande abraço!
