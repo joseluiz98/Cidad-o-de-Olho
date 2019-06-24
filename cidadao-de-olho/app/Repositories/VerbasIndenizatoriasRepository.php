@@ -17,34 +17,30 @@ class VerbasIndenizatoriasRepository
         
         try
         {
-            // Reset verbas indenizatorias table            
-            if ($deputado->verbasIndenizatorias()->delete() || $deputado->verbasIndenizatorias()->count() == 0);
+            foreach($meses as $mes)
             {
-                foreach($meses as $mes)
+                $verbasList  = file_get_contents('http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/deputados/' . $id_almg . '/' . $ano . '/' . $mes . '?formato=json');
+                $verbasList  = json_decode($verbasList)->list;
+                
+                foreach ($verbasList as $verba)
                 {
-                    $verbasList  = file_get_contents('http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/deputados/' . $id_almg . '/' . $ano . '/' . $mes . '?formato=json');
-                    $verbasList  = json_decode($verbasList)->list;
+                    $createVerbaObject   = new \Illuminate\Http\Request();
+                    $createVerbaObject->merge(['deputado_id' => $deputado->id]);
+                    $createVerbaObject->merge(['month' => $mes]);
+                    $createVerbaObject->merge(['value' => $verba->valor]);
+                    $createVerbaObject->merge(['type' => $verba->descTipoDespesa]);
                     
-                    foreach ($verbasList as $verba)
+                    $createVerbaObject   = VerbasIndenizatoriasRepository::makeCreate($createVerbaObject);
+                    // dd($createVerbaObject);
+                    if (isset($createVerbaObject->action) && $createVerbaObject->action == false)
                     {
-                        $createVerbaObject   = new \Illuminate\Http\Request();
-                        $createVerbaObject->merge(['deputado_id' => $deputado->id]);
-                        $createVerbaObject->merge(['month' => $mes]);
-                        $createVerbaObject->merge(['value' => $verba->valor]);
-                        $createVerbaObject->merge(['type' => $verba->descTipoDespesa]);
-                        
-                        $createVerbaObject   = VerbasIndenizatoriasRepository::makeCreate($createVerbaObject);
-                        // dd($createVerbaObject);
-                        if (isset($createVerbaObject->action) && $createVerbaObject->action == false)
-                        {
-                            throw new \Exception($createVerbaObject->errors);
-                            break;
-                        }
-                        else
-                        {
-                            VerbasIndenizatoriasRepository::store($createVerbaObject);
-                            sleep(1); // aguarda tempo entre requisições imposto pela api
-                        }
+                        throw new \Exception($createVerbaObject->errors);
+                        break;
+                    }
+                    else
+                    {
+                        VerbasIndenizatoriasRepository::store($createVerbaObject);
+                        sleep(1); // aguarda tempo entre requisições imposto pela api
                     }
                 }
             }

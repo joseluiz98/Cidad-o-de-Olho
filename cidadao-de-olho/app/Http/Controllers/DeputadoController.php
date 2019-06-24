@@ -40,7 +40,7 @@ class DeputadoController extends Controller
         
         $return             = new \stdClass();
         $return->message    = "Não foram encontradas verbas indenizatórias para este período";
-        $return->action     = false;
+        $return->action     = true;
         
         $deputado         = new Deputado();
         $deputadosList    = $deputado->all();
@@ -51,31 +51,34 @@ class DeputadoController extends Controller
         {
             $returnVerbas = DeputadoRepository::updateVerbasIndenizatorias($deputado);            
 
-            if (isset($returnVerbas->action) && !$returnVerbas->action)
+            if (isset($returnVerbas->action) && $returnVerbas->action == false)
             {
+                $return->action = false;
                 $return = $returnVerbas;
             }
         }
 
-        if (VerbaIndenizatoria::all()->count() > 0)
+        if ($return->action == true && VerbaIndenizatoria::all()->count() > 0)
         {
             // Possui verbas no banco, então calcula o top 5
-            $top5     = [];
-            $meses    = [1,2,3,4,5,6,7,8,9,10,11,12];
-            $verbas   = VerbaIndenizatoria::all();
-            foreach($meses as $mes)
+            $top5               = [];
+            $meses              = ["Jan" => 1, "Fev" => 2, "Mar" => 3, "Abr" => 4, "Mai" => 5, "Jun" => 6, "Jul" => 7,
+                                    "Ago" => 8, "Set" => 9, "Out" => 10, "Nov" => 11, "Dez" => 12];
+            $verbas             = VerbaIndenizatoria::all();
+            $return->message    = 'Lista processada com sucesso!';
+            foreach($meses as $mes => $numeroMes)
             {
-                $top5[] = DB::table('deputados AS d')
-                            ->select('d.id AS deputado', DB::raw('COUNT(d.id) AS contador'))
+                $top5[$mes] = DB::table('deputados AS d')
+                            ->select('d.name AS deputado', DB::raw('COUNT(d.id) AS qtdVerbasPorTipo'), 'd.partido AS partido')
                             ->join('verbas_indenizatorias AS vi', 'd.id','vi.deputado_id')
-                            ->where('vi.month','=',$mes)
+                            ->where('vi.month','=',$numeroMes)
                             ->groupBy('d.id')
-                            ->orderBy('contador','DESC')
+                            ->orderBy('qtdVerbasPorTipo','DESC')
                             ->limit(5)
                             ->get();
             }
+            $return->top5 = $top5;
         }
-        dd($top5);
-        return $return;
+        return response()->json($return);
     }
 }
