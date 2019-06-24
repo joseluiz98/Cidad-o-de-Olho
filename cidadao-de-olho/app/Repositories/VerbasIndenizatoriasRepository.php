@@ -43,7 +43,7 @@ class VerbasIndenizatoriasRepository
                         else
                         {
                             VerbasIndenizatoriasRepository::store($createVerbaObject);
-                            sleep(1); // aguarda um segundo por limitação imposta pela api dados abertos almg
+                            sleep(1); // aguarda tempo entre requisições imposto pela api
                         }
                     }
                 }
